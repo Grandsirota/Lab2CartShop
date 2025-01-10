@@ -32,11 +32,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Items> items = <Items>[
-    Items(name: 'iPhone 15', price: 1500),
-    Items(name: 'MacBook Pro', price: 2500),
-    Items(name: 'iPad Pro', price: 10000),
+  List<Item> items = <Item>[
+    Item(name: 'iPhone 15', price: 1500),
+    Item(name: 'MacBook Pro', price: 2500),
+    Item(name: 'iPad Pro', price: 10000),
   ];
+
+  int total = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +48,34 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
-        child: CartItem(),
+        child: Column(
+          children: [
+            TextButton.icon(
+                onPressed: () {},
+                label: Text('Clear Cart'),
+                icon: Icon(Icons.clear)),
+            for (Item item in items)
+              CartItem(
+                items: item,
+              ),
+            Expanded(
+              child: Container(),
+            ),
+            Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.grey[200],
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total:'),
+                    Text('$total ฿',
+                        style: Theme.of(context).textTheme.headlineLarge),
+                  ],
+                )),
+          ],
+        ),
       ),
     );
   }

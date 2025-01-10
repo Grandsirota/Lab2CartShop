@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shoppingcart/item.dart';
 
 class CartItem extends StatefulWidget {
+  final Item items;
   CartItem({
     super.key,
+    required this.items,
   });
 
   @override
@@ -10,16 +13,31 @@ class CartItem extends StatefulWidget {
 }
 
 class _CartItemState extends State<CartItem> {
-  int quantity = 1;
+  late int quantity;
+
+  @override
+  void initState() {
+    super.initState();
+    quantity = widget.items.amount;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(
-          'iPhone 15',
-          style: Theme.of(context).textTheme.headlineMedium,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.items.name,
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              'Price: ${widget.items.price}',
+              style: Theme.of(context).textTheme.labelSmall,
+            )
+          ],
         ),
         Row(
           children: <Widget>[
