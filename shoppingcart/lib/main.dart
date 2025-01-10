@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shoppingcart/cartitem.dart';
-import 'package:shoppingcart/item.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +20,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class Item {
+  final String name;
+  final double price;
+  final IconData icon; // เพิ่มฟิลด์สำหรับเก็บไอคอน
+  int quantity;
+
+  Item(
+      {required this.name,
+      required this.price,
+      required this.icon,
+      this.quantity = 0});
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -33,9 +44,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Item> items = <Item>[
-    Item(name: 'iPhone 15', price: 1500),
-    Item(name: 'MacBook Pro', price: 2500),
-    Item(name: 'iPad Pro', price: 10000),
+    Item(name: 'iPhone 15', price: 45000, icon: Icons.phone_iphone),
+    Item(name: 'MacBook Pro', price: 32500, icon: Icons.laptop_mac),
+    Item(name: 'iPad Pro', price: 35000, icon: Icons.tablet),
   ];
 
   double total = 0;
@@ -43,6 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void resetCart() {
     setState(() {
       total = 0;
+      for (var item in items) {
+        item.quantity = 0; // รีเซ็ตจำนวนสินค้าในตะกร้า
+      }
     });
   }
 
@@ -67,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 TextButton.icon(
-                  onPressed: resetCart, // เพิ่มฟังก์ชันรีเซ็ต
+                  onPressed: resetCart,
                   label: const Text('Clear Cart'),
                   icon: const Icon(Icons.clear),
                 ),
@@ -78,11 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 items: item,
                 onAddToCart: () {
                   setState(() {
+                    item.quantity += 1; // เพิ่มจำนวนสินค้า
                     total += item.price;
                   });
                 },
               ),
-            Spacer(), // ใช้ Spacer แทน Expanded เพื่อจัดการพื้นที่
+            const Spacer(),
             Container(
               width: double.infinity,
               height: 100,
@@ -99,6 +114,32 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CartItem extends StatelessWidget {
+  final Item items;
+  final VoidCallback onAddToCart;
+
+  const CartItem({super.key, required this.items, required this.onAddToCart});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(items.icon, size: 40), // เพิ่มไอคอนสำหรับสินค้า
+      title: Text(items.name),
+      subtitle: Text('Price: ${items.price} ฿'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('x${items.quantity}'), // แสดงจำนวนสินค้า
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: onAddToCart,
+          ),
+        ],
       ),
     );
   }
