@@ -3,9 +3,12 @@ import 'package:shoppingcart/item.dart';
 
 class CartItem extends StatefulWidget {
   final Item items;
-  CartItem({
+  final VoidCallback onAddToCart;
+
+  const CartItem({
     super.key,
     required this.items,
+    required this.onAddToCart,
   });
 
   @override
@@ -18,7 +21,7 @@ class _CartItemState extends State<CartItem> {
   @override
   void initState() {
     super.initState();
-    quantity = widget.items.amount;
+    quantity = 1; // กำหนดค่าเริ่มต้นของจำนวนสินค้าในตะกร้าเป็น 1
   }
 
   @override
@@ -33,37 +36,13 @@ class _CartItemState extends State<CartItem> {
               widget.items.name,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            Text(
-              'Price: ${widget.items.price}',
-              style: Theme.of(context).textTheme.labelSmall,
-            )
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.remove),
-              onPressed: () {
-                setState(() {
-                  if (quantity > 0) {
-                    quantity--;
-                  }
-                });
-                print('Quantity decreased: $quantity');
-              },
-            ),
-            Text(
-              '$quantity',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                setState(() {
-                  quantity++;
-                });
-                print('Quantity increased: $quantity');
-              },
+            ListTile(
+              title: Text(widget.items.name),
+              subtitle: Text('${widget.items.price} ฿'),
+              trailing: IconButton(
+                icon: const Icon(Icons.add_shopping_cart),
+                onPressed: widget.onAddToCart, // ใช้ onAddToCart ที่ส่งมา
+              ),
             ),
           ],
         ),

@@ -38,7 +38,22 @@ class _MyHomePageState extends State<MyHomePage> {
     Item(name: 'iPad Pro', price: 10000),
   ];
 
+  Map<Item, int> cartItems = {};
   int total = 0;
+
+  void calculateTotal() {
+    total = 0;
+    cartItems.forEach((item, quantity) {
+      total += (item.price * quantity).toInt();
+    });
+    setState(() {});
+  }
+
+  void resetCart() {
+    cartItems.clear();
+    calculateTotal();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,33 +62,45 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             TextButton.icon(
-                onPressed: () {},
-                label: Text('Clear Cart'),
-                icon: Icon(Icons.clear)),
-            for (Item item in items)
-              CartItem(
-                items: item,
-              ),
+              onPressed: resetCart,
+              label: const Text('Clear Cart'),
+              icon: const Icon(Icons.clear),
+            ),
             Expanded(
-              child: Container(),
+              child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return CartItem(
+                    items: items[index],
+                    onAddToCart: () {
+                      setState(() {
+                        cartItems[items[index]] =
+                            (cartItems[items[index]] ?? 0) + 1;
+                        calculateTotal();
+                      });
+                    },
+                  );
+                },
+              ),
             ),
             Container(
-                width: double.infinity,
-                height: 100,
-                color: Colors.grey[200],
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Total:'),
-                    Text('$total ฿',
-                        style: Theme.of(context).textTheme.headlineLarge),
-                  ],
-                )),
+              width: double.infinity,
+              height: 100,
+              color: Colors.grey[200],
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Total:'),
+                  Text('$total ฿',
+                      style: Theme.of(context).textTheme.headlineLarge),
+                ],
+              ),
+            ),
           ],
         ),
       ),
