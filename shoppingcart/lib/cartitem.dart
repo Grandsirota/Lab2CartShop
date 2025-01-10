@@ -3,12 +3,13 @@ import 'package:shoppingcart/item.dart';
 
 class CartItem extends StatefulWidget {
   final Item items;
-  final VoidCallback onAddToCart;
+  final VoidCallback
+      onAddToCart; // เพิ่ม callback สำหรับการเพิ่มสินค้าลงในตะกร้า
 
-  const CartItem({
+  CartItem({
     super.key,
     required this.items,
-    required this.onAddToCart,
+    required this.onAddToCart, // กำหนดให้ onAddToCart เป็น required
   });
 
   @override
@@ -21,7 +22,7 @@ class _CartItemState extends State<CartItem> {
   @override
   void initState() {
     super.initState();
-    quantity = 1; // กำหนดค่าเริ่มต้นของจำนวนสินค้าในตะกร้าเป็น 1
+    quantity = widget.items.amount;
   }
 
   @override
@@ -36,13 +37,38 @@ class _CartItemState extends State<CartItem> {
               widget.items.name,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            ListTile(
-              title: Text(widget.items.name),
-              subtitle: Text('${widget.items.price} ฿'),
-              trailing: IconButton(
-                icon: const Icon(Icons.add_shopping_cart),
-                onPressed: widget.onAddToCart, // ใช้ onAddToCart ที่ส่งมา
-              ),
+            Text(
+              'Price: ${widget.items.price}',
+              style: Theme.of(context).textTheme.labelSmall,
+            )
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.remove),
+              onPressed: () {
+                setState(() {
+                  if (quantity > 0) {
+                    quantity--;
+                  }
+                });
+                print('Quantity decreased: $quantity');
+              },
+            ),
+            Text(
+              '$quantity',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  quantity++;
+                });
+                print('Quantity increased: $quantity');
+                widget.onAddToCart(); // เรียก callback เมื่อเพิ่มสินค้า
+              },
             ),
           ],
         ),

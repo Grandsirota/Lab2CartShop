@@ -6,5 +6,5 @@ class Item {
 
   final String name;
   final double price;
-  final int amount = 1;
+  final int amount = 0;
 }

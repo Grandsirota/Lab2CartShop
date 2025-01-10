@@ -38,20 +38,12 @@ class _MyHomePageState extends State<MyHomePage> {
     Item(name: 'iPad Pro', price: 10000),
   ];
 
-  Map<Item, int> cartItems = {};
-  int total = 0;
-
-  void calculateTotal() {
-    total = 0;
-    cartItems.forEach((item, quantity) {
-      total += (item.price * quantity).toInt();
-    });
-    setState(() {});
-  }
+  double total = 0;
 
   void resetCart() {
-    cartItems.clear();
-    calculateTotal();
+    setState(() {
+      total = 0;
+    });
   }
 
   @override
@@ -65,28 +57,32 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            TextButton.icon(
-              onPressed: resetCart,
-              label: const Text('Clear Cart'),
-              icon: const Icon(Icons.clear),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Cart',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: resetCart, // เพิ่มฟังก์ชันรีเซ็ต
+                  label: const Text('Clear Cart'),
+                  icon: const Icon(Icons.clear),
+                ),
+              ],
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return CartItem(
-                    items: items[index],
-                    onAddToCart: () {
-                      setState(() {
-                        cartItems[items[index]] =
-                            (cartItems[items[index]] ?? 0) + 1;
-                        calculateTotal();
-                      });
-                    },
-                  );
+            for (Item item in items)
+              CartItem(
+                items: item,
+                onAddToCart: () {
+                  setState(() {
+                    total += item.price;
+                  });
                 },
               ),
-            ),
+            Spacer(), // ใช้ Spacer แทน Expanded เพื่อจัดการพื้นที่
             Container(
               width: double.infinity,
               height: 100,
