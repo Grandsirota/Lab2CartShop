@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shoppingcart/cartitem.dart';
+import 'package:shoppingcart/item.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,15 +50,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
-
-class Items {
-  Items({
-    required this.name,
-    required this.price,
-  });
-
-  final String name;
-  final double price;
-  final int amount = 1;
 }
